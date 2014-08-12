@@ -3,6 +3,7 @@
 namespace Drupal\xhprof\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\xhprof\XHProfLib\Storage\StorageManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -42,7 +43,7 @@ class ConfigForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, array &$form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('xhprof.config');
 
     $description = extension_loaded('xhprof') ? t('Profile requests with the xhprof php extension.') : '<span class="warning">' . t('You must enable the <a href="!url">xhprof php extension</a> to use this feature.', array('!url' => url('http://techportal.ibuildings.com/2009/12/01/profiling-with-xhprof/'))) . '</span>';
@@ -94,17 +95,17 @@ class ConfigForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, array &$form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state) {
     // TODO: Simplify this.
     if (isset($form_state['values']['interval']) && $form_state['values']['interval'] != '' && (!is_numeric($form_state['values']['interval']) || $form_state['values']['interval'] <= 0 || $form_state['values']['interval'] > mt_getrandmax())) {
-      $this->setFormError('interval', $form_state, $this->t('The profiling interval must be set to a positive integer.'));
+      $form_state->setError($form['settings']['interval'], $this->t('The profiling interval must be set to a positive integer.'));
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, array &$form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('xhprof.config')
       ->set('enabled', $form_state['values']['enabled'])
       ->set('exclude', $form_state['values']['exclude'])
