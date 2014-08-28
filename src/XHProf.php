@@ -1,10 +1,9 @@
 <?php
 
-namespace Drupal\xhprof\XHProfLib;
+namespace Drupal\xhprof;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\xhprof\XHProfLib\Storage\StorageInterface;
-use Drupal\xhprof\XHProfLib\Report\ReportEngine;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 
@@ -16,7 +15,7 @@ class XHProf {
   private $configFactory;
 
   /**
-   * @var StorageInterface
+   * @var \Drupal\xhprof\XHProfLib\Storage\StorageInterface
    */
   private $storage;
 
@@ -50,20 +49,39 @@ class XHProf {
    * Conditionally enable XHProf profiling.
    */
   public function enable() {
-    // @todo: consider a variable per-flag instead.
-    xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+    $flags = $this->configFactory->get('xhprof.config')->get('flags');
+    $excludeIndirectFunctions = $this->configFactory->get('xhprof.config')->get('exclude_indirect_functions');
+
+    $modifier = 0;
+    foreach ($flags as $flag) {
+      $modifier += @constant($flag);
+    }
+
+    $options = array();
+    if ($excludeIndirectFunctions) {
+      $options = array(
+        'ignored_functions' => array(
+          'call_user_func',
+          'call_user_func_array'
+        )
+      );
+    }
+
+    xhprof_enable($modifier, $options);
 
     $this->enabled = TRUE;
   }
 
   /**
+   * Shutdown and disable XHProf profiling.
+   * Report is saved with selected storage.
+   *
    * @return array
    */
   public function shutdown($runId) {
     $namespace = $this->configFactory->get('system.site')->get('name');
     $xhprof_data = xhprof_disable();
-
-    $this->enabled = TRUE;
+    $this->enabled = FALSE;
 
     return $this->storage->saveRun($xhprof_data, $namespace, $runId);
   }
@@ -78,7 +96,10 @@ class XHProf {
   }
 
   /**
-   * @param Request $request
+   * Return true if XHProf profiling can be
+   * enabled for the current request.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *
    * @return bool
    */
@@ -99,6 +120,9 @@ class XHProf {
   }
 
   /**
+   * Generate a link to the report
+   * page for a specific run id.
+   *
    * @param string $run_id
    * @param string $type
    *
@@ -112,6 +136,9 @@ class XHProf {
   }
 
   /**
+   * Return the current selected
+   * storage.
+   *
    * @return \Drupal\xhprof\XHProfLib\Storage\StorageInterface
    */
   public function getStorage() {
@@ -119,6 +146,9 @@ class XHProf {
   }
 
   /**
+   * Return the run id associated
+   * with the current request.
+   *
    * @return string
    */
   public function getRunId() {
@@ -126,6 +156,8 @@ class XHProf {
   }
 
   /**
+   * Create a new unique run id.
+   *
    * @return string
    */
   public function createRunId() {

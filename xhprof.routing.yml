@@ -15,10 +15,10 @@ xhprof.runs:
   requirements:
     _permission: 'access xhprof data'
 
-xhprof.view:
+xhprof.run:
   path: '/admin/reports/xhprof/{run}'
   defaults:
-    _content: 'Drupal\xhprof\Controller\XHProfController::viewAction'
+    _content: 'Drupal\xhprof\Controller\XHProfController::runAction'
     _title: 'XHProf view'
   options:
     parameters:

@@ -4,14 +4,14 @@ namespace Drupal\xhprof\Routing;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\ParamConverter\ParamConverterInterface;
-use Drupal\xhprof\XHProfLib\XHProf;
+use Drupal\xhprof\XHProf;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
 
 class RunConverter implements ParamConverterInterface {
 
   /**
-   * @var \Drupal\xhprof\XHProfLib\XHProf
+   * @var \Drupal\xhprof\XHProf
    */
   private $xhprof;
 
@@ -21,7 +21,7 @@ class RunConverter implements ParamConverterInterface {
   private $configFactory;
 
   /**
-   * @param \Drupal\xhprof\XHProfLib\XHProf $xhprof
+   * @param \Drupal\xhprof\XHProf $xhprof
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    */
   public function __construct(XHProf $xhprof, ConfigFactoryInterface $config_factory) {

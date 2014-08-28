@@ -61,7 +61,7 @@ class ConfigForm extends ConfigFormBase {
       '#open' => TRUE,
       '#states' => array(
         'invisible' => array(
-          'input[name="xhprof_enabled"]' => array('checked' => FALSE),
+          'input[name="enabled"]' => array('checked' => FALSE),
         ),
       ),
     );
@@ -74,10 +74,34 @@ class ConfigForm extends ConfigFormBase {
     );
 
     $form['settings']['interval'] = array(
-      '#type' => 'textfield',
+      '#type' => 'number',
       '#title' => 'Profiling interval',
+      '#min' => 0,
       '#default_value' => $config->get('interval'),
-      '#description' => $this->t('The approximate number of requests between XHProf samples. Leave empty to profile all requests'),
+      '#description' => $this->t('The approximate number of requests between XHProf samples. Leave zero to profile all requests.'),
+    );
+
+    $flags = array(
+      'XHPROF_FLAGS_CPU' => $this->t('Cpu'),
+      'XHPROF_FLAGS_MEMORY' => $this->t('Memory'),
+      'XHPROF_FLAGS_NO_BUILTINS' => $this->t('Exclude PHP builtin functions'),
+    );
+    $form['settings']['flags'] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Profile',
+      '#options' => $flags,
+      '#default_value' => $config->get('flags'),
+      '#description' => $this->t('Flags to choose what profile.'),
+    );
+
+    $form['settings']['exclude_indirect_functions'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Exclude indirect functions',
+      '#default_value' => $config->get('exclude_indirect_functions'),
+      '#description' => $this->t('Exclude functions like %call_user_func and %call_user_func_array.', array(
+          '%call_user_func' => 'call_user_func',
+          '%call_user_func_array' => 'call_user_func_array'
+        )),
     );
 
     $options = $this->storageManager->getStorages();
@@ -95,22 +119,14 @@ class ConfigForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // TODO: Simplify this.
-    if (isset($form_state['values']['interval']) && $form_state['values']['interval'] != '' && (!is_numeric($form_state['values']['interval']) || $form_state['values']['interval'] <= 0 || $form_state['values']['interval'] > mt_getrandmax())) {
-      $form_state->setError($form['settings']['interval'], $this->t('The profiling interval must be set to a positive integer.'));
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('xhprof.config')
-      ->set('enabled', $form_state['values']['enabled'])
-      ->set('exclude', $form_state['values']['exclude'])
-      ->set('interval', $form_state['values']['interval'])
-      ->set('storage', $form_state['values']['storage'])
+      ->set('enabled', $form_state->getValue('enabled'))
+      ->set('exclude', $form_state->getValue('exclude'))
+      ->set('interval', $form_state->getValue('interval'))
+      ->set('storage', $form_state->getValue('storage'))
+      ->set('flags', $form_state->getValue('flags'))
+      ->set('exclude_indirect_functions', $form_state->getValue('exclude_indirect_functions'))
       ->save();
 
     parent::submitForm($form, $form_state);

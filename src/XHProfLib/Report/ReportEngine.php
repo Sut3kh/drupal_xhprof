@@ -2,6 +2,8 @@
 
 namespace Drupal\xhprof\XHProfLib\Report;
 
+use Drupal\xhprof\XHProfLib\Parser\DiffParser;
+use Drupal\xhprof\XHProfLib\Parser\Parser;
 use Drupal\xhprof\XHProfLib\Run;
 
 /**
@@ -24,14 +26,16 @@ class ReportEngine {
   public function getReport($url_params, $source, Run $run, $wts, $symbol, $sort = 'wt', Run $run1 = NULL, Run $run2 = NULL) {
     $report = NULL;
 
-    // specific run to display?
+    // specific run to display
     if ($run) {
-      $report = new Report($run, $sort, $symbol);
+      $parser = new Parser($run, $sort, $symbol);
+      $report = new Report($parser);
     }
     // diff report for two runs
     else {
       if ($run1 && $run2) {
-        $report = new DiffReport($url_params, $run1->getData(), '', $run2->getData(), '', $symbol, $sort, $run1, $run2);
+        $report = new DiffParser($url_params, $run1->getSymbols(), '', $run2->getSymbols(), '', $symbol, $sort, $run1, $run2);
+        $report = new DiffReport($report);
       }
     }
 

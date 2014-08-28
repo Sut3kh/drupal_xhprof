@@ -7,7 +7,7 @@ services:
 
   xhprof.storage:
     class: Drupal\xhprof\XHProfLib\Storage\StorageInterface
-    factory_class: Drupal\xhprof\XHProfLib\Storage\StorageFactory
+    factory_class: Drupal\xhprof\StorageFactory
     factory_method: getStorage
     arguments: ['@config.factory', '@service_container']
 
@@ -22,7 +22,7 @@ services:
     arguments: ['@config.factory', '@path.matcher']
 
   xhprof.xhprof:
-    class: Drupal\xhprof\XHProfLib\XHProf
+    class: Drupal\xhprof\XHProf
     arguments: ['@config.factory', '@xhprof.storage', '@xhprof.matcher']
 
   xhprof.xhprof_event_subscriber:

@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\xhprof\XHProfLib;
+use Drupal\xhprof\XHProfLib\Symbol\Symbol;
 
 /**
  * Class Run
@@ -20,12 +21,12 @@ class Run {
   /**
    * @var array
    */
-  private $data = array();
+  private $symbols = array();
 
   /**
-   * @var
+   * @var \Drupal\xhprof\XHProfLib\Symbol\Symbol
    */
-  private $parser;
+  private $mainSymbol;
 
   /**
    * @param string $run_id
@@ -35,30 +36,7 @@ class Run {
   public function __construct($run_id, $namespace, $data) {
     $this->run_id = $run_id;
     $this->namespace = $namespace;
-    $this->data = $data;
-  }
-
-  /**+
-   * @return array
-   */
-  public function getKeys() {
-    return array_keys($this->data);
-  }
-
-  /**
-   * @param string $key
-   *
-   * @return array
-   */
-  public function getMetrics($key) {
-    return $this->data[$key];
-  }
-
-  /**
-   * @return array
-   */
-  public function getData() {
-    return $this->data;
+    $this->symbols = $this->parseSymbols($data);
   }
 
   /**
@@ -68,7 +46,74 @@ class Run {
     return $this->run_id;
   }
 
-  public function __toString() {
-    return 'pippo';
+  /**+
+   * @return array
+   */
+  public function getKeys() {
+    return array_keys($this->symbols);
   }
+
+  /**
+   * @param string $key
+   *
+   * @return array
+   */
+  public function getMetrics($key) {
+    return $this->symbols[$key];
+  }
+
+  /**
+   * @return array
+   */
+  public function getSymbols() {
+    return $this->symbols;
+  }
+
+  /**
+   * @return Symbol
+   */
+  public function getMainSymbol() {
+    return $this->mainSymbol;
+  }
+
+  /**
+   * @return string
+   */
+  public function __toString() {
+    return "Run id {$this->run_id}";
+  }
+
+  /**
+   * @param $data
+   *
+   * @return array
+   */
+  private function parseSymbols($data) {
+    $symbols = array();
+
+    foreach($data as $parent_child => $metrics) {
+
+      if(!isset( $metrics['cpu'])) {
+        $metrics['cpu'] = NULL;
+      }
+
+      if(!isset( $metrics['mu'])) {
+        $metrics['mu'] = NULL;
+      }
+
+      if(!isset( $metrics['pmu'])) {
+        $metrics['pmu'] = NULL;
+      }
+
+      $symbol = new Symbol($parent_child, $metrics['ct'], $metrics['wt'], $metrics['cpu'], $metrics['mu'], $metrics['pmu']);
+      $symbols[$parent_child] = $symbol;
+
+      if($symbol->getParent() == NULL) {
+        $this->mainSymbol = $symbol;
+      }
+    }
+
+    return $symbols;
+  }
+
 }

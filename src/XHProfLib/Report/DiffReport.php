@@ -2,6 +2,13 @@
 
 namespace Drupal\xhprof\XHProfLib\Report;
 
-class DiffReport {
+/**
+ * Class DiffReport
+ */
+class DiffReport implements ReportInterface {
+
+  public function getReport() {
+    // TODO: Implement getReport() method.
+  }
 
 }

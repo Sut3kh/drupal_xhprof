@@ -1,16 +1,29 @@
 <?php
 
-namespace Drupal\xhprof\XHProfLib\Report;
+namespace Drupal\xhprof\XHProfLib\Parser;
 
-class Sorter {
+/**
+ * Class SymbolsSorter
+ */
+class SymbolsSorter {
 
   private static $metric;
 
+  /**
+   * @param $symbols
+   * @param $metric
+   */
   static function sort(&$symbols, $metric) {
     self::$metric = $metric;
-    uasort($symbols, array("Drupal\\xhprof\\XHProfLib\\Report\\Sorter", "cmp_method"));
+    uasort($symbols, array("Drupal\\xhprof\\XHProfLib\\Parser\\SymbolsSorter", "cmp_method"));
   }
 
+  /**
+   * @param $a
+   * @param $b
+   *
+   * @return int
+   */
   static function cmp_method($a, $b) {
     $metric = self::$metric;
 

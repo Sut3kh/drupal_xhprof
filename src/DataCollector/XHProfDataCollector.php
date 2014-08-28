@@ -5,7 +5,7 @@ namespace Drupal\xhprof\DataCollector;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\webprofiler\DataCollector\DrupalDataCollectorTrait;
 use Drupal\webprofiler\DrupalDataCollectorInterface;
-use Drupal\xhprof\XHProfLib\XHProf;
+use Drupal\xhprof\XHProf;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
@@ -15,12 +15,12 @@ class XHProfDataCollector extends DataCollector implements DrupalDataCollectorIn
   use StringTranslationTrait, DrupalDataCollectorTrait;
 
   /**
-   * @var \Drupal\xhprof\XHProfLib\XHProf
+   * @var \Drupal\xhprof\XHProf
    */
   private $xhprof;
 
   /**
-   * @param \Drupal\xhprof\XHProfLib\XHProf $xhprof
+   * @param \Drupal\xhprof\XHProf $xhprof
    */
   public function __construct(XHProf $xhprof) {
     $this->xhprof = $xhprof;

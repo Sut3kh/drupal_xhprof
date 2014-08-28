@@ -1,7 +1,5 @@
 <?php
 
-define('XHPROF_PATH', 'admin/reports/xhprof');
-
 /**
  * Implementation of hook_permission().
  */

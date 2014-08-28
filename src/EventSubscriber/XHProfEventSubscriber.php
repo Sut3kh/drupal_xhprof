@@ -4,7 +4,7 @@ namespace Drupal\xhprof\EventSubscriber;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\xhprof\XHProfLib\XHProf;
+use Drupal\xhprof\XHProf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event;
@@ -19,7 +19,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class XHProfEventSubscriber implements EventSubscriberInterface {
 
   /**
-   * @var \Drupal\xhprof\XHProfLib\XHProf
+   * @var \Drupal\xhprof\XHProf
    */
   public $xhprof;
 
@@ -44,7 +44,7 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
   private $moduleHandler;
 
   /**
-   * @param \Drupal\xhprof\XHProfLib\XHProf $xhprof
+   * @param \Drupal\xhprof\XHProf $xhprof
    * @param \Drupal\Core\Session\AccountInterface $currentUser
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    */
