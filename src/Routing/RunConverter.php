@@ -32,7 +32,7 @@ class RunConverter implements ParamConverterInterface {
   /**
    * {@inheritdoc}
    */
-  public function convert($value, $definition, $name, array $defaults, Request $request) {
+  public function convert($value, $definition, $name, array $defaults) {
     try {
       $namespace = $this->configFactory->get('system.site')->get('name');
       return $this->xhprof->getStorage()->getRun($value, $namespace);
