@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\xhprof\XHProfLib\Storage\StorageInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class XHProf {
 
@@ -25,6 +26,11 @@ class XHProf {
   private $requestMatcher;
 
   /**
+   * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
+   */
+  private $urlGenerator;
+
+  /**
    * @var string
    */
   private $runId;
@@ -38,11 +44,13 @@ class XHProf {
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    * @param \Drupal\xhprof\XHProfLib\Storage\StorageInterface $storage
    * @param \Symfony\Component\HttpFoundation\RequestMatcherInterface $requestMatcher
+   * @param \Symfony\Component\Routing\Generator\UrlGeneratorInterface $urlGenerator
    */
-  public function __construct(ConfigFactoryInterface $configFactory, StorageInterface $storage, RequestMatcherInterface $requestMatcher) {
+  public function __construct(ConfigFactoryInterface $configFactory, StorageInterface $storage, RequestMatcherInterface $requestMatcher, UrlGeneratorInterface $urlGenerator) {
     $this->configFactory = $configFactory;
     $this->storage = $storage;
     $this->requestMatcher = $requestMatcher;
+    $this->urlGenerator = $urlGenerator;
   }
 
   /**
@@ -106,7 +114,8 @@ class XHProf {
   public function canEnable(Request $request) {
     $config = $this->configFactory->get('xhprof.config');
 
-    if (extension_loaded('xhprof') && $config->get('enabled') && $this->requestMatcher->matches($request)) {
+    //if (extension_loaded('xhprof') && $config->get('enabled') && $this->requestMatcher->matches($request)) {
+    if (extension_loaded('uprofiler') && $config->get('enabled') && $this->requestMatcher->matches($request)) {
       $interval = $config->get('interval');
 
       if ($interval && mt_rand(1, $interval) % $interval != 0) {
@@ -129,9 +138,11 @@ class XHProf {
    * @return string
    */
   public function link($run_id, $type = 'link') {
-    $url = url(XHPROF_PATH . '/' . $run_id, array(
+    $url = $this->urlGenerator->generate('xhprof.run', ['run' => $run_id], UrlGeneratorInterface::ABSOLUTE_PATH);
+
+    /*$url = url('admin/reports/xhprof/' . $run_id, array(
       'absolute' => TRUE,
-    ));
+    ));*/
     return $type == 'url' ? $url : l(t('XHProf output'), $url);
   }
 

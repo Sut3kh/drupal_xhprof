@@ -97,10 +97,6 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
           $this->injectLink($response, $this->xhprofRunId);
         }
       }
-
-      if (function_exists('drush_log')) {
-        drush_log('xhprof link: ' . $this->xhprof->link($this->xhprofRunId, 'url'), 'notice');
-      }
     }
   }
 

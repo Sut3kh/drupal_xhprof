@@ -9,15 +9,15 @@
  */
 function xhprof_drush_command() {
   $items['xhprof-list'] = array(
-    'description' => dt(''),
+    'description' => dt('List the runs in file storage.'),
     'arguments' => array(),
   );
   $items['xhprof-combine'] = array(
-    'description' => dt(''),
+    'description' => dt('Aggregate data from multiple runs.'),
     'arguments' => array(),
   );
   $items['xhprof-clear'] = array(
-    'description' => dt(''),
+    'description' => dt('Delete run files.'),
     'arguments' => array(),
   );
   return $items;
@@ -137,7 +137,7 @@ function drush_xhprof_clear() {
 
 function drush_xhprof_get_dir() {
   $dir = ini_get("xhprof.output_dir");
-  return (!empty($dir) && is_dir($dir)) ? $dir = "/tmp" : FALSE;
+  return (!empty($dir) && is_dir($dir)) ? $dir : sys_get_temp_dir();
 }
 
 function drush_xhprof_list_run_files() {
@@ -151,7 +151,7 @@ function drush_xhprof_list_run_files() {
 
 function drush_xhprof_get_runs() {
   $dir = drush_xhprof_get_dir();
-  $run_ids = array();
+  $runs = array();
 
   foreach (glob("{$dir}/*.xhprof") as $file) {
     $run = array();

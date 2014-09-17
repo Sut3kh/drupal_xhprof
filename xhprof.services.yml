@@ -23,7 +23,7 @@ services:
 
   xhprof.xhprof:
     class: Drupal\xhprof\XHProf
-    arguments: ['@config.factory', '@xhprof.storage', '@xhprof.matcher']
+    arguments: ['@config.factory', '@xhprof.storage', '@xhprof.matcher', '@url_generator']
 
   xhprof.xhprof_event_subscriber:
     class: Drupal\xhprof\EventSubscriber\XHProfEventSubscriber

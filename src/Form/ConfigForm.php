@@ -7,6 +7,7 @@
 
 namespace Drupal\xhprof\Form;
 
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\xhprof\XHProfLib\Storage\StorageManager;
@@ -53,10 +54,10 @@ class ConfigForm extends ConfigFormBase {
     $extension_loaded = extension_loaded('xhprof');
 
     // @todo Use inline template for warning.
-    $description = $extension_loaded ? $this->t('Profile requests with the xhprof php extension.') : '<span class="warning">' . $this->t('You must enable the <a href="!url">xhprof php extension</a> to use this feature.', array('!url' => url('https://www.drupal.org/node/946182'))) . '</span>';
+    $description = $extension_loaded ? $this->t('Profile requests with the xhprof php extension.') : SafeMarkup::set('<span class="warning">' . $this->t('You must enable the <a href="!url">xhprof php extension</a> to use this feature.', array('!url' => url('https://www.drupal.org/node/946182'))) . '</span>');
     $form['enabled'] = array(
       '#type' => 'checkbox',
-      '#title' => $this->t('Enable profiling of page views and <a href="!drush">drush</a> requests.', array('!drush' => url('https://github.com/drush-ops/drush'))),
+      '#title' => $this->t('Enable profiling of page views.'),
       '#default_value' => $extension_loaded & $config->get('enabled'),
       '#description' => $description,
       '#disabled' => !$extension_loaded,
