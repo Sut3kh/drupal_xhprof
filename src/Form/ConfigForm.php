@@ -54,7 +54,7 @@ class ConfigForm extends ConfigFormBase {
     $extension_loaded = extension_loaded('xhprof');
 
     // @todo Use inline template for warning.
-    $description = $extension_loaded ? $this->t('Profile requests with the xhprof php extension.') : SafeMarkup::set('<span class="warning">' . $this->t('You must enable the <a href="!url">xhprof php extension</a> to use this feature.', array('!url' => url('https://www.drupal.org/node/946182'))) . '</span>');
+    $description = $extension_loaded ? $this->t('Profile requests with the xhprof php extension.') : SafeMarkup::set('<span class="warning">' .  $this->t('You must enable the ' . $this->l('xhprof php extension', Url::fromUri('https://www.drupal.org/node/946182')) . ' to use this feature.</span>'));
     $form['enabled'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Enable profiling of page views.'),
