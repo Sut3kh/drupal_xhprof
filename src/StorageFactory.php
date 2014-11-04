@@ -24,7 +24,8 @@ class StorageFactory {
    * @return \Drupal\xhprof\XHProfLib\Storage\StorageInterface
    */
   final public static function getStorage(ConfigFactoryInterface $config, ContainerInterface $container) {
-    $storage = $config->get('xhprof.config')->get('storage') ? : 'xhprof.file_storage';
+    $storage = $config->get('xhprof.config')
+      ->get('storage') ?: 'xhprof.file_storage';
 
     return $container->get($storage);
   }

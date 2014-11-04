@@ -149,6 +149,7 @@ class ReportConstants {
 
   /**
    * @param $num
+   *
    * @return string
    */
   public static function countFormat($num) {
@@ -164,6 +165,7 @@ class ReportConstants {
   /**
    * @param $s
    * @param int $precision
+   *
    * @return string
    */
   public static function percentFormat($s, $precision = 1) {

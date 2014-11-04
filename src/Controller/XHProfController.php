@@ -10,11 +10,12 @@ namespace Drupal\xhprof\Controller;
 use Drupal\Component\Utility\String;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Url;
+use Drupal\xhprof\ProfilerInterface;
 use Drupal\xhprof\XHProfLib\Report\ReportConstants;
 use Drupal\xhprof\XHProfLib\Report\ReportEngine;
 use Drupal\xhprof\XHProfLib\Report\ReportInterface;
 use Drupal\xhprof\XHProfLib\Run;
-use Drupal\xhprof\XHProf;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,9 +25,9 @@ use Symfony\Component\HttpFoundation\Request;
 class XHProfController extends ControllerBase {
 
   /**
-   * @var \Drupal\xhprof\XHProf
+   * @var \Drupal\xhprof\ProfilerInterface
    */
-  private $xhprof;
+  private $profiler;
 
   /**
    * @var \Drupal\xhprof\XHProfLib\Report\ReportEngine
@@ -38,17 +39,17 @@ class XHProfController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('xhprof.xhprof'),
+      $container->get('xhprof.profiler'),
       $container->get('xhprof.report_engine')
     );
   }
 
   /**
-   * @param \Drupal\xhprof\XHProf $xhprof
+   * @param \Drupal\xhprof\ProfilerInterface $profiler
    * @param \Drupal\xhprof\XHProfLib\Report\ReportEngine $reportEngine
    */
-  public function __construct(XHProf $xhprof, ReportEngine $reportEngine) {
-    $this->xhprof = $xhprof;
+  public function __construct(ProfilerInterface $profiler, ReportEngine $reportEngine) {
+    $this->profiler = $profiler;
     $this->reportEngine = $reportEngine;
   }
 
@@ -56,7 +57,7 @@ class XHProfController extends ControllerBase {
    *
    */
   public function runsAction() {
-    $runs = $run = $this->xhprof->getStorage()->getRuns();
+    $runs = $run = $this->profiler->getStorage()->getRuns();
 
     // Table attributes
     $attributes = array('id' => 'xhprof-runs-table');
@@ -71,7 +72,7 @@ class XHProfController extends ControllerBase {
     $rows = array();
     foreach ($runs as $run) {
       $row = array();
-      $row[] = $this->l($run['run_id'], 'xhprof.run', array('run' => $run['run_id']));
+      $row[] = $this->l($run['run_id'], new Url('xhprof.run', array('run' => $run['run_id'])));
       $row[] = isset($run['path']) ? $run['path'] : '';
       $row[] = format_date($run['date'], 'small');
       $rows[] = $row;
@@ -108,10 +109,10 @@ class XHProfController extends ControllerBase {
       '#template' => ($length == -1) ? '<h3>Displaying all functions, sorted by {{ sort }}.</h3>' : '<h3>Displaying top {{ length }} functions, sorted by {{ sort }}. [{{ all }}]</h3>',
       '#context' => array(
         'length' => $length,
-        'all' => $this->l('show all', 'xhprof.run', array(
-            'run' => $run->getId(),
-            'length' => -1
-          )),
+        'all' => $this->l($this->t('show all'), new Url('xhprof.run', array(
+          'run' => $run->getId(),
+          'length' => -1
+        ))),
         'sort' => Xss::filter($descriptions[$sort], array()),
       ),
     );
@@ -171,7 +172,10 @@ class XHProfController extends ControllerBase {
       $short = substr($short, 0, 30) . " … " . substr($short, -5);
     }
 
-    return String::format('<abbr title="@class">@short</abbr>', array('@class' => $class, '@short' => $short));
+    return String::format('<abbr title="@class">@short</abbr>', array(
+      '@class' => $class,
+      '@short' => $short
+    ));
   }
 
   /**

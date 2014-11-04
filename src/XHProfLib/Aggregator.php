@@ -81,6 +81,7 @@ class Aggregator {
    * @param bool $skip_bad_runs
    *  Set to TRUE to prevent this method from failing in the case of a bad run
    *  (i.e. a corrupt, unserializable file).
+   *
    * @return array
    */
   public function sum($skip_bad_runs = FALSE) {
@@ -115,7 +116,7 @@ class Aggregator {
   }
 
   public static function sd_square($x, $mean) {
-    return pow($x - $mean,2);
+    return pow($x - $mean, 2);
   }
 
   /**
@@ -123,7 +124,10 @@ class Aggregator {
    */
   public static function sd($array) {
     // square root of sum of squares devided by N-1
-    return sqrt(array_sum(array_map(array('XHProfTools', 'sd_square'), $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array)-1));
+    return sqrt(array_sum(array_map(array(
+            'XHProfTools',
+            'sd_square'
+          ), $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1));
   }
 }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\xhprof\XHProfLib;
+
 use Drupal\xhprof\XHProfLib\Symbol\Symbol;
 
 /**
@@ -91,24 +92,24 @@ class Run {
   private function parseSymbols($data) {
     $symbols = array();
 
-    foreach($data as $parent_child => $metrics) {
+    foreach ($data as $parent_child => $metrics) {
 
-      if(!isset( $metrics['cpu'])) {
+      if (!isset($metrics['cpu'])) {
         $metrics['cpu'] = NULL;
       }
 
-      if(!isset( $metrics['mu'])) {
+      if (!isset($metrics['mu'])) {
         $metrics['mu'] = NULL;
       }
 
-      if(!isset( $metrics['pmu'])) {
+      if (!isset($metrics['pmu'])) {
         $metrics['pmu'] = NULL;
       }
 
       $symbol = new Symbol($parent_child, $metrics['ct'], $metrics['wt'], $metrics['cpu'], $metrics['mu'], $metrics['pmu']);
       $symbols[$parent_child] = $symbol;
 
-      if($symbol->getParent() == NULL) {
+      if ($symbol->getParent() == NULL) {
         $this->mainSymbol = $symbol;
       }
     }

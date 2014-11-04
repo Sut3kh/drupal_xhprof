@@ -4,7 +4,7 @@ namespace Drupal\xhprof\EventSubscriber;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\xhprof\XHProf;
+use Drupal\xhprof\ProfilerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event;
@@ -19,9 +19,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class XHProfEventSubscriber implements EventSubscriberInterface {
 
   /**
-   * @var \Drupal\xhprof\XHProf
+   * @var \Drupal\xhprof\ProfilerInterface
    */
-  public $xhprof;
+  public $profiler;
 
   /**
    * @var \Drupal\Core\Session\AccountInterface
@@ -44,12 +44,12 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
   private $moduleHandler;
 
   /**
-   * @param \Drupal\xhprof\XHProf $xhprof
+   * @param \Drupal\xhprof\ProfilerInterface $profiler
    * @param \Drupal\Core\Session\AccountInterface $currentUser
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    */
-  public function __construct(XHProf $xhprof, AccountInterface $currentUser, ModuleHandlerInterface $module_handler) {
-    $this->xhprof = $xhprof;
+  public function __construct(ProfilerInterface $profiler, AccountInterface $currentUser, ModuleHandlerInterface $module_handler) {
+    $this->profiler = $profiler;
     $this->currentUser = $currentUser;
     $this->moduleHandler = $module_handler;
   }
@@ -58,8 +58,8 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
    * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
    */
   public function onKernelRequest(GetResponseEvent $event) {
-    if($this->xhprof->canEnable($event->getRequest())) {
-      $this->xhprof->enable();
+    if ($this->profiler->canEnable($event->getRequest())) {
+      $this->profiler->enable();
     }
   }
 
@@ -67,8 +67,8 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
    * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
    */
   public function onKernelResponse(FilterResponseEvent $event) {
-    if ($this->xhprof->isEnabled()) {
-      $this->xhprofRunId = $this->xhprof->createRunId();
+    if ($this->profiler->isEnabled()) {
+      $this->xhprofRunId = $this->profiler->createRunId();
 
       // Don't print the link to xhprof run page if
       // Webprofiler module is enabled, a widget will
@@ -104,8 +104,8 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
    * @param \Symfony\Component\HttpKernel\Event\PostResponseEvent $event
    */
   public function onKernelTerminate(PostResponseEvent $event) {
-    if ($this->xhprof->isEnabled()) {
-      $this->xhprof->shutdown($this->xhprofRunId);
+    if ($this->profiler->isEnabled()) {
+      $this->profiler->shutdown($this->xhprofRunId);
     }
   }
 
@@ -129,7 +129,7 @@ class XHProfEventSubscriber implements EventSubscriberInterface {
     $pos = mb_strripos($content, '</body>');
 
     if (FALSE !== $pos) {
-      $output = '<div class="xhprof-ui">' . $this->xhprof->link($xhprofRunId) . '</div>';
+      $output = '<div class="xhprof-ui">' . $this->profiler->link($xhprofRunId) . '</div>';
       $content = mb_substr($content, 0, $pos) . $output . mb_substr($content, $pos);
       $response->setContent($content);
     }

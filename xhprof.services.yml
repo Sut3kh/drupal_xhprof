@@ -21,18 +21,18 @@ services:
     class: Drupal\xhprof\RequestMatcher\XHProfRequestMatcher
     arguments: ['@config.factory', '@path.matcher']
 
-  xhprof.xhprof:
-    class: Drupal\xhprof\XHProf
-    arguments: ['@config.factory', '@xhprof.storage', '@xhprof.matcher', '@url_generator']
+  xhprof.profiler:
+    class: Drupal\xhprof\Profiler
+    arguments: ['@config.factory', '@xhprof.storage', '@xhprof.matcher']
 
   xhprof.xhprof_event_subscriber:
     class: Drupal\xhprof\EventSubscriber\XHProfEventSubscriber
-    arguments: ['@xhprof.xhprof', '@current_user', '@module_handler']
+    arguments: ['@xhprof.profiler', '@current_user', '@module_handler']
     tags:
       - { name: event_subscriber }
 
   xhprof.run_converter:
     class: Drupal\xhprof\Routing\RunConverter
-    arguments: ['@xhprof.xhprof', '@config.factory']
+    arguments: ['@xhprof.profiler', '@config.factory']
     tags:
       - { name: paramconverter }

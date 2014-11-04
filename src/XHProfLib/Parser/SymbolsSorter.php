@@ -15,7 +15,10 @@ class SymbolsSorter {
    */
   static function sort(&$symbols, $metric) {
     self::$metric = $metric;
-    uasort($symbols, array("Drupal\\xhprof\\XHProfLib\\Parser\\SymbolsSorter", "cmp_method"));
+    uasort($symbols, array(
+        "Drupal\\xhprof\\XHProfLib\\Parser\\SymbolsSorter",
+        "cmp_method"
+      ));
   }
 
   /**

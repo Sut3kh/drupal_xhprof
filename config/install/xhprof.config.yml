@@ -2,8 +2,4 @@ enabled: false
 interval: 0
 storage: xhprof.file_storage
 exclude: "/contextual/*\r\n/toolbar/*\r\n/edit/*\r\n/admin/*\r\n/profiler/*\r\n*.js\r\n*.css"
-flags:
-  XHPROF_FLAGS_CPU: XHPROF_FLAGS_CPU
-  XHPROF_FLAGS_MEMORY: XHPROF_FLAGS_MEMORY
-  XHPROF_FLAGS_NO_BUILTINS: 0
 exclude_indirect_functions: 0

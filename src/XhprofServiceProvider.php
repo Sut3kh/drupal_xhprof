@@ -20,7 +20,7 @@ class XhprofServiceProvider extends ServiceProviderBase {
 
     if (FALSE !== $container->hasDefinition('profiler')) {
       $container->register('webprofiler.xhprof', 'Drupal\xhprof\DataCollector\XHProfDataCollector')
-        ->addArgument(new Reference(('xhprof.xhprof')))
+        ->addArgument(new Reference(('xhprof.profiler')))
         ->addTag('data_collector', array(
           'template' => '@xhprof/Collector/xhprof.html.twig',
           'id' => 'xhprof',

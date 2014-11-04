@@ -4,16 +4,16 @@ namespace Drupal\xhprof\Routing;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\ParamConverter\ParamConverterInterface;
-use Drupal\xhprof\XHProf;
+use Drupal\xhprof\ProfilerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
 
 class RunConverter implements ParamConverterInterface {
 
   /**
-   * @var \Drupal\xhprof\XHProf
+   * @var \Drupal\xhprof\ProfilerInterface
    */
-  private $xhprof;
+  private $profiler;
 
   /**
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -21,11 +21,11 @@ class RunConverter implements ParamConverterInterface {
   private $configFactory;
 
   /**
-   * @param \Drupal\xhprof\XHProf $xhprof
+   * @param \Drupal\xhprof\ProfilerInterface $profiler
    * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    */
-  public function __construct(XHProf $xhprof, ConfigFactoryInterface $config_factory) {
-    $this->xhprof = $xhprof;
+  public function __construct(ProfilerInterface $profiler, ConfigFactoryInterface $config_factory) {
+    $this->profiler = $profiler;
     $this->configFactory = $config_factory;
   }
 
@@ -35,8 +35,8 @@ class RunConverter implements ParamConverterInterface {
   public function convert($value, $definition, $name, array $defaults) {
     try {
       $namespace = $this->configFactory->get('system.site')->get('name');
-      return $this->xhprof->getStorage()->getRun($value, $namespace);
-    } catch(\Exception $e) {
+      return $this->profiler->getStorage()->getRun($value, $namespace);
+    } catch (\Exception $e) {
       return NULL;
     }
   }
