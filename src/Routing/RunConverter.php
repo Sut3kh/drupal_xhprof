@@ -34,8 +34,7 @@ class RunConverter implements ParamConverterInterface {
    */
   public function convert($value, $definition, $name, array $defaults) {
     try {
-      $namespace = $this->configFactory->get('system.site')->get('name');
-      return $this->profiler->getStorage()->getRun($value, $namespace);
+      return $this->profiler->getRun($value);
     } catch (\Exception $e) {
       return NULL;
     }

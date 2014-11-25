@@ -97,11 +97,10 @@ class Profiler implements ProfilerInterface {
    * {@inheritdoc}
    */
   public function shutdown($runId) {
-    $namespace = $this->configFactory->get('system.site')->get('name');
     $xhprof_data = $this->activeExtension->disable();
     $this->enabled = FALSE;
 
-    return $this->storage->saveRun($xhprof_data, $namespace, $runId);
+    return $this->storage->saveRun($xhprof_data, $this->getNamespace(), $runId);
   }
 
   /**
@@ -188,4 +187,20 @@ class Profiler implements ProfilerInterface {
     return $this->runId;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getRun($run_id) {
+    return $this->getStorage()->getRun($run_id, $this->getNamespace());
+  }
+
+  /**
+   * Return the namespace for this site. Currently is set
+   * to the site name value.
+   *
+   * @return string
+   */
+  private function getNamespace() {
+    return $this->configFactory->get('system.site')->get('name');
+  }
 }

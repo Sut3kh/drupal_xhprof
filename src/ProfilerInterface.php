@@ -77,4 +77,13 @@ interface ProfilerInterface {
    * @return string
    */
   public function createRunId();
+
+  /**
+   * Load a specific run.
+   *
+   * @param string $run_id
+   *
+   * @return \Drupal\xhprof\XHProfLib\Run
+   */
+  public function getRun($run_id);
 }

@@ -10,7 +10,7 @@ xhprof.admin_configure:
 xhprof.runs:
   path: '/admin/reports/xhprof'
   defaults:
-    _content: 'Drupal\xhprof\Controller\XHProfController::runsAction'
+    _controller: 'Drupal\xhprof\Controller\XHProfController::runsAction'
     _title: 'XHProf runs'
   requirements:
     _permission: 'access xhprof data'
@@ -18,7 +18,7 @@ xhprof.runs:
 xhprof.run:
   path: '/admin/reports/xhprof/{run}'
   defaults:
-    _content: 'Drupal\xhprof\Controller\XHProfController::runAction'
+    _controller: 'Drupal\xhprof\Controller\XHProfController::runAction'
     _title: 'XHProf view'
   options:
     parameters:
@@ -30,7 +30,7 @@ xhprof.run:
 xhprof.symbol:
   path: '/admin/reports/xhprof/{run}/symbol/{symbol}'
   defaults:
-    _content: 'Drupal\xhprof\Controller\XHProfController::symbolAction'
+    _controller: 'Drupal\xhprof\Controller\XHProfController::symbolAction'
     _title: 'XHProf view'
   options:
     parameters:
@@ -42,7 +42,7 @@ xhprof.symbol:
 xhprof.diff:
   path: '/admin/reports/xhprof/diff/{run1}/{run2}'
   defaults:
-    _content: 'Drupal\xhprof\Controller\XHProfController::diffAction'
+    _controller: 'Drupal\xhprof\Controller\XHProfController::diffAction'
     _title: 'XHProf view'
   options:
     parameters:
