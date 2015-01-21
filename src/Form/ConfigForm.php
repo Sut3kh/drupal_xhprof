@@ -18,6 +18,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a form to configure profiling settings.
  */
 class ConfigForm extends ConfigFormBase {
+  protected function getEditableConfigNames() {
+    return ['xhprof.config'];
+  }
 
   /**
    * @var \Drupal\xhprof\XHProfLib\Storage\StorageManager
