@@ -7,7 +7,7 @@
 
 namespace Drupal\xhprof\Controller;
 
-use Drupal\Component\Utility\String;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
@@ -172,7 +172,7 @@ class XHProfController extends ControllerBase {
       $short = substr($short, 0, 30) . " … " . substr($short, -5);
     }
 
-    return String::format('<abbr title="@class">@short</abbr>', array(
+    return SafeMarkup::format('<abbr title="@class">@short</abbr>', array(
       '@class' => $class,
       '@short' => $short
     ));
@@ -197,7 +197,7 @@ class XHProfController extends ControllerBase {
 
     $descriptions = ReportConstants::getDescriptions();
     foreach ($headers as &$header) {
-      $header = String::format($descriptions[$header]);
+      $header = SafeMarkup::format($descriptions[$header]);
     }
 
     return $headers;
