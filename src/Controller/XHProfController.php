@@ -90,7 +90,7 @@ class XHProfController extends ControllerBase {
 
   /**
    * @param \Drupal\xhprof\XHProfLib\Run $run
-   * @param Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    *
    * @return string
    */
@@ -103,6 +103,18 @@ class XHProfController extends ControllerBase {
     $build['#title'] = $this->t('XHProf view report for %id', array('%id' => $run->getId()));
 
     $descriptions = ReportConstants::getDescriptions();
+
+    $build['summary'] = array(
+      'title' => array(
+        '#type' => 'inline_template',
+        '#template' => '<h3>Summary</h3>',
+      ),
+      'table' => array(
+        '#theme' => 'table',
+        '#header' => array(),
+        '#rows' => $this->getSummaryRows($report, $descriptions),
+      )
+    );
 
     $build['length'] = array(
       '#type' => 'inline_template',
@@ -117,12 +129,9 @@ class XHProfController extends ControllerBase {
       ),
     );
 
-    // TODO: render the overall summary
-    //$totals = $report->getTotals();
-
     $build['table'] = array(
       '#theme' => 'table',
-      '#header' => $this->getRunHeader($report),
+      '#header' => $this->getRunHeader($report, $descriptions),
       '#rows' => $this->getRunRows($report, $length),
       '#attributes' => array('class' => array('responsive')),
       '#attached' => array(
@@ -142,8 +151,6 @@ class XHProfController extends ControllerBase {
    * @return string
    */
   public function diffAction(Run $run1, Run $run2) {
-    //drupal_add_css(drupal_get_path('module', 'xhprof') . '/xhprof.css');
-
     return ''; //xhprof_display_run(array($run1, $run2), $symbol = NULL);
   }
 
@@ -154,8 +161,6 @@ class XHProfController extends ControllerBase {
    * @return string
    */
   public function symbolAction(Run $run, $symbol) {
-    //drupal_add_css(drupal_get_path('module', 'xhprof') . '/xhprof.css');
-
     return ''; //xhprof_display_run(array($run_id), $symbol);
   }
 
@@ -179,11 +184,12 @@ class XHProfController extends ControllerBase {
   }
 
   /**
-   * @param ReportInterface $report
+   * @param \Drupal\xhprof\XHProfLib\Report\ReportInterface $report
+   * @param array $descriptions
    *
    * @return array
    */
-  private function getRunHeader($report) {
+  private function getRunHeader(ReportInterface $report, $descriptions) {
     $headers = array('fn', 'ct', 'ct_perc');
 
     $metrics = $report->getMetrics();
@@ -195,7 +201,6 @@ class XHProfController extends ControllerBase {
       $headers[] = 'excl_' . $metric . '_perc';
     }
 
-    $descriptions = ReportConstants::getDescriptions();
     foreach ($headers as &$header) {
       $header = SafeMarkup::format($descriptions[$header]);
     }
@@ -204,12 +209,12 @@ class XHProfController extends ControllerBase {
   }
 
   /**
-   * @param ReportInterface $report
-   * @param $length
+   * @param \Drupal\xhprof\XHProfLib\Report\ReportInterface $report
+   * @param int $length
    *
    * @return array
    */
-  private function getRunRows($report, $length) {
+  private function getRunRows(ReportInterface $report, $length) {
     $symbols = $report->getSymbols($length);
 
     foreach ($symbols as &$symbol) {
@@ -219,4 +224,28 @@ class XHProfController extends ControllerBase {
     return $symbols;
   }
 
+  /**
+   * @param \Drupal\xhprof\XHProfLib\Report\ReportInterface $report
+   * @param array $descriptions
+   *
+   * @return array
+   */
+  private function getSummaryRows(ReportInterface $report, $descriptions) {
+    $summaryRows = array();
+    $possibileMetrics = $report->getPossibleMetrics();
+    foreach ($report->getSummary() as $metric => $value) {
+      $key = 'Total ' . Xss::filter($descriptions[$metric], array());
+      $unit = isset($possibileMetrics[$metric]) ? $possibileMetrics[$metric][1] : '';
+
+      $summaryRows[] = array(
+        $key,
+        SafeMarkup::format('@value @unit', array(
+          '@value' => $value,
+          '@unit' => $unit
+        )),
+      );
+    }
+
+    return $summaryRows;
+  }
 }

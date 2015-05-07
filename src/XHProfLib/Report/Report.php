@@ -28,9 +28,7 @@ class Report implements ReportInterface {
   }
 
   /**
-   * @param int $length
-   *
-   * @return mixed
+   * {@inheritdoc}
    */
   public function getSymbols($length = 100) {
     if ($length != -1) {
@@ -61,6 +59,23 @@ class Report implements ReportInterface {
     }
 
     return $symbols;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSummary() {
+    $summary = array();
+    $totals = $this->getTotals();
+    foreach ($this->getMetrics() as $metric) {
+      $summary[$metric] = $this->getValue($totals[$metric], $metric);
+    }
+
+    if ($this->getDisplayCalls()) {
+      $summary['ct'] = $this->getValue($totals['ct'], 'ct');
+    }
+
+    return $summary;
   }
 
   /**

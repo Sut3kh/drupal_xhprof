@@ -15,10 +15,22 @@
 
     {% endset %}
     {% set text %}
-    <div class="sf-toolbar-info-piece">
-        <b>{{ 'Run id'|t }}</b>
-        <span>{{ collector.runId }}</span>
-    </div>
+    {% if collector.runId %}
+        <div class="sf-toolbar-info-piece">
+            <b>{{ 'Run id'|t }}</b>
+            <span>{{ collector.runId }}</span>
+        </div>
+        {% if collector.showSummaryData %}
+            <div class="sf-toolbar-info-piece">
+                <b>{{ 'Calls'|t }}</b>
+                <span>{{ collector.calls }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>{{ 'Incl. Wall Time'|t }}</b>
+                <span>{{ collector.wt }}</span>
+            </div>
+        {% endif %}
+    {% endif %}
     {% endset %}
 
     <div class="sf-toolbar-block">
