@@ -17,6 +17,11 @@ interface ReportInterface {
   /**
    * @return mixed
    */
+  public function getSummary();
+
+  /**
+   * @return mixed
+   */
   public function getTotals();
 
   /**

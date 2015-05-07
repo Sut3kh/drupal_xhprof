@@ -7,3 +7,4 @@ flags:
   FLAGS_CPU: '0'
   FLAGS_MEMORY: '0'
   FLAGS_NO_BUILTINS: '0'
+show_summary_toolbar: false

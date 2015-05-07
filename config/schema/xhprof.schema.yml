@@ -27,3 +27,6 @@ xhprof.config:
     storage:
       type: string
       label: 'Choose the XHProf storage class'
+    show_summary_toolbar:
+      type: boolean
+      label: 'Show summary data in toolbar'

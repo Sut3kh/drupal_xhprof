@@ -7,6 +7,7 @@
 
 namespace Drupal\xhprof\Form;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
@@ -33,22 +34,30 @@ class ConfigForm extends ConfigFormBase {
   private $profiler;
 
   /**
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private $moduleHandler;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new static (
       $container->get('xhprof.storage_manager'),
-      $container->get('xhprof.profiler')
+      $container->get('xhprof.profiler'),
+      $container->get('module_handler')
     );
   }
 
   /**
    * @param \Drupal\xhprof\XHProfLib\Storage\StorageManager $storageManager
    * @param \Drupal\xhprof\ProfilerInterface $profiler
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
    */
-  public function __construct(StorageManager $storageManager, ProfilerInterface $profiler) {
+  public function __construct(StorageManager $storageManager, ProfilerInterface $profiler, ModuleHandlerInterface $moduleHandler) {
     $this->storageManager = $storageManager;
     $this->profiler = $profiler;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -152,6 +161,26 @@ class ConfigForm extends ConfigFormBase {
       '#description' => $this->t('Choose the storage class.'),
     );
 
+    if($this->moduleHandler->moduleExists('webprofiler')) {
+      $form['webprofiler'] = array(
+        '#title' => $this->t('Webprofiler integration'),
+        '#type' => 'details',
+        '#open' => TRUE,
+        '#states' => array(
+          'invisible' => array(
+            'input[name="enabled"]' => array('checked' => FALSE),
+          ),
+        ),
+      );
+
+      $form['webprofiler']['show_summary_toolbar'] = array(
+        '#type' => 'checkbox',
+        '#title' => $this->t('Show summary data in toolbar.'),
+        '#default_value' => $config->get('show_summary_toolbar'),
+        '#description' => $this->t('Show data from the overall summary directly into the Webprofiler toolbar. May slow down the toolbar rendering.'),
+      );
+    }
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -167,6 +196,7 @@ class ConfigForm extends ConfigFormBase {
       ->set('storage', $form_state->getValue('storage'))
       ->set('flags', $form_state->getValue('flags'))
       ->set('exclude_indirect_functions', $form_state->getValue('exclude_indirect_functions'))
+      ->set('show_summary_toolbar', $form_state->getValue('show_summary_toolbar'))
       ->save();
 
     parent::submitForm($form, $form_state);
