@@ -7,8 +7,7 @@ services:
 
   xhprof.storage:
     class: Drupal\xhprof\XHProfLib\Storage\StorageInterface
-    factory_class: Drupal\xhprof\StorageFactory
-    factory_method: getStorage
+    factory: Drupal\xhprof\StorageFactory::getStorage
     arguments: ['@config.factory', '@service_container']
 
   xhprof.storage_manager:
