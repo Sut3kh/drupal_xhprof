@@ -4,7 +4,7 @@
     {% if collector.runId %}
         <a href="{{ url("xhprof.run", {run: collector.runId}) }}" title="{{ 'XHProf'|t }}">
             <img width="20" height="28" alt="Asset"
-                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAYAAAB2+A+pAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQ5JREFUeNrsVtENgjAQLcYFWKErlAH4gBFkBB1BRpARYAQZQUaQEWQEGQHvknfJWSUhMZGQtMmj5ejdu747CNE0TWaNsTMrjUAciAPx9on3fEnT9F98F8KZUMmJb4Qaa0vg72iG2SlHuX9izXgQDguJmTQhlEJ8IhwRlLNqCR2exZ5zDOSEiLMnXBeQZph7XeNBBciQyNLBSYw4/R0xLNaiiMNpRTWrm6uBQ4tARpVBZDVf7CxzARurVIK8hSIN7ivsYduw8/TvIblVdpE08ojFnqiydFDPiaSY7dzr5ECYI9P6x+4dVFPqJD6IRYoR9c1Up46ezzhj17YC/roUb/uj8AcSiANxIN4c8UuAAQBgXEUcKgS1eAAAAABJRU5ErkJggg=="/>
+                 src="data:image/png;base64,{{ collector.icon }}"/>
         </a>
     {% else %}
         <span>

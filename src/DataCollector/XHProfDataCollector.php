@@ -2,7 +2,7 @@
 
 namespace Drupal\xhprof\DataCollector;
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\webprofiler\DataCollector\DrupalDataCollectorTrait;
 use Drupal\webprofiler\DrupalDataCollectorInterface;
@@ -119,9 +119,19 @@ class XHProfDataCollector extends DataCollector implements DrupalDataCollectorIn
 
     $unit = isset($this->possibileMetrics[$metric]) ? $this->possibileMetrics[$metric][1] : '';
 
-    return SafeMarkup::format('@value @unit', array(
+    return new FormattableMarkup('@value @unit', [
       '@value' => $this->summary[$metric],
       '@unit' => $unit
-    ));
+    ]);
+  }
+
+  /**
+   * Returns the collector icon in base64 format.
+   *
+   * @return string
+   *   The collector icon.
+   */
+  public function getIcon() {
+    return 'iVBORw0KGgoAAAANSUhEUgAAAB4AAAAcCAYAAAB2+A+pAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQ5JREFUeNrsVtENgjAQLcYFWKErlAH4gBFkBB1BRpARYAQZQUaQEWQEGQHvknfJWSUhMZGQtMmj5ejdu747CNE0TWaNsTMrjUAciAPx9on3fEnT9F98F8KZUMmJb4Qaa0vg72iG2SlHuX9izXgQDguJmTQhlEJ8IhwRlLNqCR2exZ5zDOSEiLMnXBeQZph7XeNBBciQyNLBSYw4/R0xLNaiiMNpRTWrm6uBQ4tARpVBZDVf7CxzARurVIK8hSIN7ivsYduw8/TvIblVdpE08ojFnqiydFDPiaSY7dzr5ECYI9P6x+4dVFPqJD6IRYoR9c1Up46ezzhj17YC/roUb/uj8AcSiANxIN4c8UuAAQBgXEUcKgS1eAAAAABJRU5ErkJggg==';
   }
 }

@@ -7,7 +7,7 @@
 
 namespace Drupal\xhprof\Controller;
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
@@ -177,10 +177,10 @@ class XHProfController extends ControllerBase {
       $short = substr($short, 0, 30) . " … " . substr($short, -5);
     }
 
-    return SafeMarkup::format('<abbr title="@class">@short</abbr>', array(
+    return new FormattableMarkup('<abbr title="@class">@short</abbr>', [
       '@class' => $class,
       '@short' => $short
-    ));
+    ]);
   }
 
   /**
@@ -202,7 +202,7 @@ class XHProfController extends ControllerBase {
     }
 
     foreach ($headers as &$header) {
-      $header = SafeMarkup::format($descriptions[$header]);
+      $header = new FormattableMarkup($descriptions[$header], []);
     }
 
     return $headers;
@@ -237,12 +237,14 @@ class XHProfController extends ControllerBase {
       $key = 'Total ' . Xss::filter($descriptions[$metric], array());
       $unit = isset($possibileMetrics[$metric]) ? $possibileMetrics[$metric][1] : '';
 
+      $value = new FormattableMarkup('@value @unit', [
+        '@value' => $value,
+        '@unit' => $unit
+      ]);
+
       $summaryRows[] = array(
         $key,
-        SafeMarkup::format('@value @unit', array(
-          '@value' => $value,
-          '@unit' => $unit
-        )),
+        $value,
       );
     }
 
