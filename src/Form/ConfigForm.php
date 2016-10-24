@@ -78,7 +78,7 @@ class ConfigForm extends ConfigFormBase {
       $help = $this->t('Profile requests with the XHProf or uprofiler php extension.');
     }
     else {
-      $help = $this->t('You must enable the !xhprof or !uprofiler php extension.', ['!xhprof' => $this->l('XHProf', Url::fromUri('https://www.drupal.org/node/946182')), '!uprofiler' => $this->l('uprofiler', Url::fromUri('https://github.com/FriendsOfPHP/uprofiler'))]);
+      $help = $this->t('You must enable the %xhprof or %uprofiler php extension.', ['%xhprof' => $this->l('XHProf', Url::fromUri('https://www.drupal.org/node/946182')), '%uprofiler' => $this->l('uprofiler', Url::fromUri('https://github.com/FriendsOfPHP/uprofiler'))]);
     }
     $form['help'] = array(
       '#type' => 'inline_template',
@@ -111,7 +111,7 @@ class ConfigForm extends ConfigFormBase {
       '#title' => $this->t('Extension'),
       '#options' => $this->profiler->getExtensions(),
       '#default_value' => $config->get('extension'),
-      '#description' => $this->t('Choose the extension to use for profiling. The recommended extension is !uprofiler because it is actively maintained.', ['!uprofiler' => $this->l('uprofiler', Url::fromUri('https://github.com/FriendsOfPHP/uprofiler'))]),
+      '#description' => $this->t('Choose the extension to use for profiling. The recommended extension is %uprofiler because it is actively maintained.', ['%uprofiler' => $this->l('uprofiler', Url::fromUri('https://github.com/FriendsOfPHP/uprofiler'))]),
     );
 
     $form['settings']['exclude'] = array(
