@@ -490,7 +490,7 @@ function theme_xhprof_run_table($variables) {
         xhprof_print_pct_cell($data['mu'], $totals['mu'], TRUE),
         xhprof_print_num_cell($data['excl_mu'], NULL, TRUE),
         xhprof_print_pct_cell($data['excl_mu'], $totals['mu'], TRUE),
-        xhprof_print_num_cell($data['pmu'], NULL, TRUE), 
+        xhprof_print_num_cell($data['pmu'], NULL, TRUE),
         xhprof_print_pct_cell($data['pmu'], $totals['pmu'], TRUE),
         xhprof_print_num_cell($data['excl_pmu'], NULL, TRUE),
         xhprof_print_pct_cell($data['excl_pmu'], $totals['pmu'], TRUE),
