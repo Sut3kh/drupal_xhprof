@@ -45,6 +45,15 @@ function xhprof_admin_settings() {
     '#default_value' => variable_get('xhprof_disable_admin_paths', TRUE),
   );
 
+  if (module_exists('admin_menu')) {
+    $form['settings']['xhprof_disable_admin_menu_paths'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Disable profiling of Admin-Menu paths'),
+      '#description' => t('The Admin-Menu module is installed, check this setting to avoid profiling the admin-menu XHR requests.'),
+      '#default_value' => variable_get('xhprof_disable_admin_menu_paths', TRUE),
+    );
+  }
+
   $form['settings']['xhprof_interval'] = array(
     '#type' => 'textfield',
     '#title' => 'Profiling interval',
