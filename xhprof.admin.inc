@@ -9,13 +9,13 @@
  * Administrative settings form for XHProf module.
  */
 function xhprof_admin_settings() {
-  $description = extension_loaded('xhprof') ? t('Profile requests with the xhprof php extension.') : '<span class="warning">' . t('You must enable the <a href="!url">xhprof php extension</a> to use this feature.', array('!url' => url('http://techportal.ibuildings.com/2009/12/01/profiling-with-xhprof/'))) . '</span>';
+  $description = xhprof_extension_check() ? t('Profile requests with the xhprof php extension.') : '<span class="warning">' . t('You must enable the <a href="!url">xhprof php extension</a> to use this feature.', array('!url' => url('http://techportal.ibuildings.com/2009/12/01/profiling-with-xhprof/'))) . '</span>';
   $form['xhprof_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable profiling of page views and <a href="!drush">drush</a> requests.', array('!drush' => url('http://drush.ws'))),
     '#default_value' => variable_get('xhprof_enabled', FALSE),
     '#description' => $description,
-    '#disabled' => !extension_loaded('xhprof'),
+    '#disabled' => !xhprof_extension_check(),
   );
   $form['settings'] = array(
     '#title' => t('Profiling settings'),
