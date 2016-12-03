@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Url;
 use Drupal\xhprof\Extension\UprofilerExtension;
 use Drupal\xhprof\Extension\XHProfExtension;
+use Drupal\xhprof\Extension\TidewaysExtension;
 use Drupal\xhprof\XHProfLib\Storage\StorageInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
@@ -58,6 +59,9 @@ class Profiler implements ProfilerInterface {
     }
     elseif ($extension == 'uprofiler') {
       $this->activeExtension = new UprofilerExtension();
+    }
+    elseif ($extension == 'tideways') {
+      $this->activeExtension = new TidewaysExtension();
     }
   }
 
@@ -148,6 +152,10 @@ class Profiler implements ProfilerInterface {
 
     if (UprofilerExtension::isLoaded()) {
       $extensions['uprofiler'] = 'UProfiler';
+    }
+
+    if (TidewaysExtension::isLoaded()) {
+      $extensions['tideways'] = 'Tideways';
     }
 
     return $extensions;
